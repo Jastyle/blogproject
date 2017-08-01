@@ -17,12 +17,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-
-from blog import views
+# from django.views.static import serve
+# from blogproject.settings import STATIC_ROOT
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'comments/', include('comments.urls', namespace='comments')),
-    url(r'blog/', include('blog.urls', namespace='blog')),
-
+    url(r'', include('comments.urls')),
+    url(r'', include('blog.urls')),
+    # url(r'^static/(?P<path>.*)$', serve, name={'document_root': STATIC_ROOT}),
 ]
