@@ -24,6 +24,8 @@ class Tag(models.Model):
 
 
 class Post(models.Model):
+    # 文章阅读量
+    views = models.PositiveIntegerField(default=0)
     # article title
     title = models.CharField(max_length=100)
     # article create time
@@ -44,6 +46,15 @@ class Post(models.Model):
     # 记得从 django.urls 中导入 reverse 函数
     def get_absolute_url(self):
         return reverse('blog:detail', kwargs={'pk': self.pk})
+
+    # 保存文章阅读量
+    def increase_views(self):
+        self.views += 1
+        self.save(update_fields=['views'])
+
+    # 文章评论数量
+    def comment_counts(self):
+        return self.comment_set.count()
 
     def __str__(self):
         return '%s %s %s %s' % (self.title, self.tag, self.create_time, self.user)
