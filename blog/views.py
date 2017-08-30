@@ -10,6 +10,10 @@ from comments.forms import CommentForm
 
 def index(request):
     post_list = Post.objects.all().order_by('-create_time')
+    for post in post_list:
+        post.excerpt = markdown.markdown(post.excerpt, extensions=['markdown.extensions.extra',
+                                                                   'markdown.extensions.codehilite',
+                                                                   'markdown.extensions.toc', ])
     return render(request, 'blog/index.html', context={'post_list': post_list})
 
 
@@ -18,8 +22,8 @@ def detail(request, pk):
     # 阅读量+1
     post.increase_views()
     post.body = markdown.markdown(post.body, extensions=['markdown.extensions.extra',
-                                                          'markdown.extensions.codehilite',
-                                                          'markdown.extensions.toc', ])
+                                                         'markdown.extensions.codehilite',
+                                                         'markdown.extensions.toc', ])
     form = CommentForm()
     comment_list = post.comment_set.all().order_by('-create_time')
     context = {
@@ -27,7 +31,13 @@ def detail(request, pk):
         'form': form,
         'comment_list': comment_list,
     }
+    # values = request.META.items()
+    # values.sort()
+    # html = []
+    # for k, v in values:
+    #     html.append('<tr><td>%s</td><td>%s</td></tr>' % (k, v))
     return render(request, 'blog/detail.html', context=context)
+    # return HttpResponse('<table>%s</table>' % '\n'.join(html))
 
 
 def archives(request, year, month):
